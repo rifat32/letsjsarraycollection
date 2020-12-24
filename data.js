@@ -1,4 +1,5 @@
 
+
 class Collection {
     constructor(arr) {
         this.arr = [...arr];
@@ -231,7 +232,7 @@ duplicatesLoose() {
 return new Collection(darr.reverse());
         }; 
    // @@@@@@@@@@@@@@@@@@@@@@@@@@  each   @@@@@@@@@@@@@@@@@@@@@@@@@   
-   each = function(callback) {
+   each(callback) {
     const newArray = [];
     let length;
     length = this.arr.length;
@@ -241,7 +242,7 @@ return new Collection(darr.reverse());
       return new Collection(newArray);
     };  
   // @@@@@@@@@@@@@@@@@@@@@@@@@@  eachSpread   @@@@@@@@@@@@@@@@@@@@@@@@@   
-  eachSpread = function(callback) {
+  eachSpread(callback) {
     const newArray = [];
    let length;
    length = this.arr.length;
@@ -268,7 +269,123 @@ eachSpreadDeep(callback) {
   };
 this.arr.forEach(flatten);
 return new Collection(flattenedArray);
-};                           
+};   
+// @@@@@@@@@@@@@@@@@@@@@@@@@@  every   @@@@@@@@@@@@@@@@@@@@@@@@@   
+every(callbackfn, thisArg) {
+  'use strict';
+  var T, k;
+  if (this.arr == null) {
+    throw new TypeError('this is null or not defined');
+  }
+  var O = Object(this.arr);
+  var len = O.length >>> 0;
+  if (typeof callbackfn !== 'function' && Object.prototype.toString.call(callbackfn) !== '[object Function]') {
+    throw new TypeError();
+  }
+  if (arguments.length > 1) {
+    T = thisArg;
+  }
+  k = 0;
+  while (k < len) {
+    var kValue;
+    if (k in O) {
+      var testResult;
+      kValue = O[k];
+      if(T) testResult = callbackfn.call(T, kValue, k, O);
+      else testResult = callbackfn(kValue,k,O)
+      if (!testResult) {
+        return false;
+      }
+    }
+    k++;
+  }
+  return true;
+};     
+// @@@@@@@@@@@@@@@@@@@@@@@@@@  except   @@@@@@@@@@@@@@@@@@@@@@@@@   
+except(arg) {
+  
+  if(arg instanceof Collection){
+    const resultArr = [];
+    const argAll = arg.all();
+    this.arr.forEach(el => {
+      if(!argAll.includes(el)){
+        resultArr.push(el)
+    return el;
+      }
+      }); 
+    return new Collection(resultArr);
+  }
+  else{
+    const resultArr = [];
+    this.arr.forEach(el => {
+   if(!arg.includes(el)){
+     resultArr.push(el)
+ return el;
+   }
+   }); 
+ return new Collection(resultArr);
+  }
+ 
+};   
+// @@@@@@@@@@@@@@@@@@@@@@@@@@  exceptLoose   @@@@@@@@@@@@@@@@@@@@@@@@@   
+exceptLoose(arg) {
+  if(arg instanceof Collection){
+    const resultArr = [];
+    this.arr.forEach(el => {
+      if(!arg.includesLoose(el)){
+        resultArr.push(el)
+    return el;
+      }
+      }); 
+    return new Collection(resultArr);
+  }
+  else{
+    const argIns = new Collection(arg);
+    const resultArr = [];
+     this.arr.forEach(el => {
+    if(!argIns.includesLoose(el)){
+      resultArr.push(el)
+  return el;
+    }
+    }); 
+  return new Collection(resultArr);
+  }
+  
+};      
+// @@@@@@@@@@@@@@@@@@@@@@@@@@  filter   @@@@@@@@@@@@@@@@@@@@@@@@@   
+filter(func, thisArg) {
+  'use strict';
+  if ( ! ((typeof func === 'Function' || typeof func === 'function') && this.arr) )
+      throw new TypeError();
+
+  var len = this.arr.length >>> 0,
+      res = new Array(len), 
+      t = this.arr, c = 0, i = -1;
+
+  var kValue;
+  if (thisArg === undefined){
+    while (++i !== len){
+      if (i in this.arr){
+        kValue = t[i]; 
+        if (func(t[i], i, t)){
+          res[c++] = kValue;
+        }
+      }
+    }
+  }
+  else{
+    while (++i !== len){
+      if (i in this.arr){
+        kValue = t[i];
+        if (func.call(thisArg, t[i], i, t)){
+          res[c++] = kValue;
+        }
+      }
+    }
+  }
+  res.length = c; 
+  return new Collection(res);
+};                 
       //   Index Of Loose
       indexOfLoose(arg) {
         let first;  
